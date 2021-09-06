@@ -1,0 +1,222 @@
+﻿@model Lara_VI.Entities.ViewModels.ProductViewModel
+@{
+    var title = "Create Product";
+}
+@using Lara_VI.Repositories.Utility
+<form method="post" enctype="multipart/form-data" name="productCreate">
+    @if (Model.Product.Id != 0)
+    {
+        title = "Edit Product";
+        <input asp-for="Product.Id" hidden />
+
+    }
+
+    <div class="border p-3">
+
+        <div class="form-group row">
+            <h2 class="text-info pl-3">@title</h2>
+        </div>
+
+        <div class="row">
+            <div class="col-8">
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="Product.Name"></label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="Product.Name" class="form-control" />
+                        <span asp-validation-for="Product.Name" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="Product.Price"></label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="Product.Price" class="form-control" />
+                        <span asp-validation-for="Product.Price" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="Product.Description"></label>
+                    </div>
+                    <div class="col-8">
+                        <textarea asp-for="Product.Description" class="form-control summernote"></textarea>
+                        <span asp-validation-for="Product.Description" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="Product.ShortDescription"></label>
+                    </div>
+                    <div class="col-8">
+                        <textarea asp-for="Product.ShortDescription" class="form-control "></textarea>
+                        <span asp-validation-for="Product.ShortDescription" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        Image
+                    </div>
+                    <div class="col-8">
+                        <input type="file" name="files" id="uploadPhoto" multiple class="form-control" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        
+                        <label asp-for="Product.CategoryId" asp-items=""></label>
+                    </div>
+                    <div class="col-8">
+                        <select asp-for="Product.CategoryId" asp-items="@Model.CategorySelectList" class="form-select" id="CategoryID">
+                            <option selected disabled>--Select Category--</option>
+                        </select>
+                        <span asp-validation-for="Product.CategoryId" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+
+                    </div>
+                    <div class="col-8">
+                        <button type="button" class="btn btn-success mt-2 " data-toggle="modal" data-target="#categoryModal">
+                            Create New Category
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-group form-check">
+                    <label class="form-check-label">
+                        <input class="form-check-input" asp-for="Product.Popularity" id="popularity" /> @Html.DisplayNameFor(model => model.Product.Popularity)
+                    </label>
+                </div>
+                <div class="form-group form-check">
+                    <label class="form-check-label">
+                        <input class="form-check-input" asp-for="Product.ByWeight" id="byWeight" /> @Html.DisplayNameFor(model => model.Product.ByWeight)
+                    </label>
+                </div>
+                <div class="form-group form-check">
+                    <label class="form-check-label">
+                        <input class="form-check-input" asp-for="Product.ByPeace" id="byPeace" /> @Html.DisplayNameFor(model => model.Product.ByPeace)
+                    </label>
+                </div>
+
+
+                <div class="form-group row">
+                    <div class="col-8 offset-4 row">
+
+                        <div class="col">
+                            @if (Model.Product.Id != 0)
+                            {
+                                // Update
+                                <button type="submit" class="btn btn-info w-100"><i class="far fa-edit"></i>&nbsp; Update</button>
+                            }
+                            else
+                            {
+                                // Create
+                                <button type="submit" onclick="return validateInput()" class="btn btn-primary w-100"><i class="fas fa-plus"></i>&nbsp; Create</button>
+                            }
+
+                        </div>
+
+                        <div class="col">
+                            <a asp-action="Index" class="btn btn-success w-100"><i class="fas fa-sign-out-alt"></i>&nbsp; Back</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                @if (Model.Product.Id != 0)
+                {
+                    <img src="@WebConstants.ImagePath@Model.Product.Image" style="width:100%;border-radius:5px;border:1px solid #bbb" />
+                }
+
+            </div>
+        </div>
+    </div>
+</form>
+
+<div class="modal fade" id="categoryModal" tabindex="-1" aria-labelledby="categoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="categoryModalLabel">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body row">
+                <div class="col-8">
+                    <div class="form-group row">
+                        <div class="col-4">
+                            <label asp-for="Product.Category.Name"></label>
+                        </div>
+                        <div class="col-8">
+                            <input asp-for="Product.Category.Name" class="form-control" />
+                            <span asp-validation-for="Product.Category.Name" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="addNewCategory">Add New Category</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts{
+
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+    <script>
+        $(document).ready(function () {
+            $('.summernote').summernote({
+                height: 250
+            });
+        });
+        function validateInput() {
+            if (document.getElementById("uploadPhoto").value == "") {
+                Swal.fire(
+                    'Error!',
+                    'Please upload an Image!',
+                    'error'
+                )
+                return false
+            }
+            return true;
+        }
+
+        $("#addNewCategory").click(function () {
+
+            var data = { Name: $("#Product_Category_Name").val() };
+
+            $.ajax({
+                type: "POST",
+                url: "/Category/CreateCategoryAJAX",
+                data: data,
+                dataType: "json",
+                success: function (data) {
+                    if (data.data == '') {
+                        $('#categoryModal').modal('toggle');
+                        setTimeout(() => {
+                            alert("Error: Category has NOT been added! Please enter data in all the fields!");
+                        }, 500);
+                    } else {
+                        $("#CategoryID").append("<option value=" + data.data.id + ">" + data.data.name + "</option>");
+                        $("#CategoryID").val(data.data.id);
+                        var newOptionSelected = $("#CategoryID option:selected").text();
+                        $("#CategoryName").val(newOptionSelected);
+                        $('#categoryModal').modal('toggle');
+                    }
+                },
+                error: function () { alert("Error Adding New Category!"); }
+            });
+        });
+
+    </script>
+}

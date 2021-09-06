@@ -1,0 +1,60 @@
+﻿@model Lara_VI.Entities.ViewModels.HomeViewModel
+
+<div class="container">
+    <div class="text-center">
+        <div class="dropdown">
+            <button class="btn btn-dark dropdown-toggle " id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Category
+            </button>
+
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                <button class="dropdown-header filter-button btn btn-outline-secondary dropdown-item w-100" data-filter="all">All</button>
+                @foreach (var category in Model.Categories)
+                {
+                    <button class="dropdown-item filter-button btn btn-outline-secondary w-100 " data-filter="@category.Name.Replace(' ','_')">@category.Name</button>
+                }
+            </div>
+        </div>
+
+
+        @*<button class="btn btn-dark filter-button" data-filter="all">All</button>
+            @foreach (var category in Model.Categories)
+            {
+                <button class="filter-button btn btn-outline-secondary " data-filter="@category.Name.Replace(' ','_')">@category.Name</button>
+            }*@
+
+    </div>
+    <br />
+    <div class="row">
+        
+            @foreach (var product in Model.Products)
+            {
+
+                <partial name="_IndividualProductCard" model="product" />
+
+            }
+       
+    </div>
+</div>
+
+@section Scripts{
+
+    <script>
+        $(document).ready(function () {
+
+            $(".filter-button").click(function () {
+
+                var value = $(this).attr('data-filter');
+                if (value == "all") {
+                    $('.filter').show('1000');
+                }
+                else {
+                    $(".filter").not('.' + value).hide('3000');
+                    $('.filter').filter('.' + value).show('3000');
+
+                }
+            });
+
+        });
+    </script>
+}
